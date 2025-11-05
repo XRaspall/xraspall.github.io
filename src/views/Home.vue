@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="empty-state">
-      <p></p>
+      <p>Accede a <a href="#/roulette">la ruleta</a></p>
     </div>
   </div>
 </template>
