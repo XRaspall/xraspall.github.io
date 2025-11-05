@@ -1,1 +1,342 @@
-Hello World
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta de Tareas - Equipo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .roulette-wrapper {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 40px;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ff4444;
+            z-index: 10;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .roulette {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 8px solid #fff;
+        }
+
+        .slice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%);
+            transform-origin: center;
+        }
+
+        .slice-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slice-text {
+            position: absolute;
+            top: 25%;
+            left: 65%;
+            transform: rotate(36deg);
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Colors for each person */
+        .slice:nth-child(1) {
+            background: #FF6B6B;
+            transform: rotate(0deg);
+        }
+        .slice:nth-child(2) {
+            background: #4ECDC4;
+            transform: rotate(72deg);
+        }
+        .slice:nth-child(3) {
+            background: #45B7D1;
+            transform: rotate(144deg);
+        }
+        .slice:nth-child(4) {
+            background: #FFA07A;
+            transform: rotate(216deg);
+        }
+        .slice:nth-child(5) {
+            background: #98D8C8;
+            transform: rotate(288deg);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .spin-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 600px) {
+            .roulette-wrapper {
+                width: 300px;
+                height: 300px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .slice-text {
+                font-size: 1em;
+            }
+
+            .spin-button {
+                padding: 15px 40px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Ruleta de Tareas</h1>
+        <p class="subtitle">¿Quién será el afortunado?</p>
+
+        <div class="roulette-wrapper">
+            <div class="pointer"></div>
+            <div class="roulette" id="roulette">
+                <div class="slice">
+                    <div class="slice-content">
+                        <span class="slice-text">Xavi</span>
+                    </div>
+                </div>
+                <div class="slice">
+                    <div class="slice-content">
+                        <span class="slice-text">Abdel</span>
+                    </div>
+                </div>
+                <div class="slice">
+                    <div class="slice-content">
+                        <span class="slice-text">Marc</span>
+                    </div>
+                </div>
+                <div class="slice">
+                    <div class="slice-content">
+                        <span class="slice-text">David</span>
+                    </div>
+                </div>
+                <div class="slice">
+                    <div class="slice-content">
+                        <span class="slice-text">Eric</span>
+                    </div>
+                </div>
+                <div class="center-circle"></div>
+            </div>
+        </div>
+
+        <button class="spin-button" id="spinButton">Girar Ruleta</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        const names = ['Xavi', 'Abdel', 'Marc', 'David', 'Eric'];
+        const colors = {
+            'Xavi': '#FF6B6B',
+            'Abdel': '#4ECDC4',
+            'Marc': '#45B7D1',
+            'David': '#FFA07A',
+            'Eric': '#98D8C8'
+        };
+
+        const roulette = document.getElementById('roulette');
+        const spinButton = document.getElementById('spinButton');
+        const resultDiv = document.getElementById('result');
+
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        spinButton.addEventListener('click', () => {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            spinButton.disabled = true;
+            resultDiv.classList.remove('show');
+
+            // Random selection
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const winner = names[randomIndex];
+
+            // Calculate rotation
+            // Each slice is 72 degrees (360/5)
+            // We want the pointer to land in the middle of the selected slice
+            const degreesPerSlice = 360 / names.length;
+            const baseRotation = randomIndex * degreesPerSlice;
+
+            // Add extra rotations for effect (5-8 full rotations)
+            const extraRotations = (Math.floor(Math.random() * 4) + 5) * 360;
+
+            // Calculate final rotation
+            // We need to adjust so the pointer (at top) points to the center of the slice
+            const targetRotation = extraRotations + (360 - baseRotation) - (degreesPerSlice / 2);
+            const finalRotation = currentRotation + targetRotation;
+
+            // Animate with GSAP
+            gsap.to(roulette, {
+                rotation: finalRotation,
+                duration: 4,
+                ease: "power4.out",
+                onComplete: () => {
+                    currentRotation = finalRotation % 360;
+
+                    // Show result
+                    resultDiv.innerHTML = `
+                        <div>¡La tarea es para: <strong>${winner}</strong>!</div>
+                        <div style="font-size: 0.7em; margin-top: 10px; opacity: 0.9;">
+                            Color: <span style="display: inline-block; width: 20px; height: 20px; background: ${colors[winner]}; border-radius: 3px; vertical-align: middle; border: 2px solid white;"></span>
+                        </div>
+                    `;
+                    resultDiv.classList.add('show');
+
+                    isSpinning = false;
+                    spinButton.disabled = false;
+                }
+            });
+
+            // Add a slight bounce effect to the button
+            gsap.to(spinButton, {
+                scale: 0.95,
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1
+            });
+        });
+
+        // Initial animation on page load
+        gsap.from('.container', {
+            opacity: 0,
+            scale: 0.9,
+            duration: 0.8,
+            ease: "back.out"
+        });
+
+        gsap.from('.roulette-wrapper', {
+            opacity: 0,
+            rotation: -180,
+            duration: 1,
+            delay: 0.3,
+            ease: "back.out"
+        });
+    </script>
+</body>
+</html>
