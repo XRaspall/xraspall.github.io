@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="empty-state">
-      <p>Accede a <a href="#/roulette">la ruleta</a></p>
+      <p>Accede a <router-link to="/roulette">la ruleta</router-link></p>
     </div>
   </div>
 </template>

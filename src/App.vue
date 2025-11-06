@@ -1,41 +1,13 @@
 <template>
   <div id="app" class="app">
-    <component :is="currentComponent" />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Roulette from './components/Roulette.vue';
-import Home from './views/Home.vue';
-
 export default {
-  name: 'App',
-  components: {
-    Roulette,
-    Home
-  },
-  data() {
-    return {
-      currentComponent: 'Home'
-    };
-  },
-  mounted() {
-    const handleRoute = () => {
-      const hash = window.location.hash.slice(1) || '/';
-      const pathname = window.location.pathname;
-
-      // Si la ruta es /roulette o hash es /roulette, mostrar ruleta
-      if (pathname.includes('roulette') || hash.includes('roulette')) {
-        this.currentComponent = 'Roulette';
-      } else {
-        this.currentComponent = 'Home';
-      }
-    };
-
-    window.addEventListener('hashchange', handleRoute);
-    handleRoute();
-  }
-};
+  name: 'App'
+}
 </script>
 
 <style>
