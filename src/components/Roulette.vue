@@ -16,9 +16,7 @@
                 :fill="colors[name]"
                 class="slice-sector"
               />
-              <!-- Mostrar imagen si existe -->
               <image
-                v-if="hasImage[name]"
                 :href="`/${name.toLowerCase()}.png`"
                 :x="getLabelX(index) - 25"
                 :y="getLabelY(index) - 25"
@@ -26,15 +24,6 @@
                 height="50"
                 class="slice-image"
               />
-              <!-- Mostrar texto si no tiene imagen -->
-              <text
-                v-else
-                :x="getLabelX(index)"
-                :y="getLabelY(index)"
-                class="slice-label"
-              >
-                {{ name }}
-              </text>
             </g>
 
             <circle cx="200" cy="200" r="30" fill="white" stroke="#ddd" stroke-width="2"/>
@@ -64,14 +53,6 @@ export default {
         'Romina': '#FFA07A',
         'David': '#FFB6B9',
         'Eric': '#98D8C8'
-      },
-      hasImage: {
-        'Xavi': true,
-        'Abdel': true,
-        'Marc': true,
-        'Romina': true,
-        'David': false,
-        'Eric': false
       },
       rotation: 0,
       isSpinning: false,
